@@ -1,5 +1,11 @@
 #!/usr/bin/python3 -Es
 from __future__ import print_function
+
+from pathlib import Path
+import sys
+path_root = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(path_root))
+
 import argparse
 import functools
 import os
@@ -83,6 +89,8 @@ def start(job, message):
         job.request_start()
     except WebService.InvalidWebServiceException as e:
         raise SystemExit(str(e)) from e
+    sys.stdout.write("Custom webservice: will try running ~/prestop.sh if pod is terminated\n")
+    sys.stdout.flush()
     # FIXME: Treat pending state differently.
     return wait_for(lambda: job.get_state() == Backend.STATE_RUNNING, message)
 
@@ -452,6 +460,8 @@ if __name__ == "__main__":
         )
         print("  for currently supported types.")
 
+    sys.stdout.write("Using custom webservice tool\n")
+    sys.stdout.flush()
     if args.action == "start":
         if job.get_state() != Backend.STATE_STOPPED:
             print("Your job is already running")

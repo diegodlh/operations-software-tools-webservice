@@ -578,6 +578,11 @@ class KubernetesBackend(Backend):
                     "resources": resources,
                     "tty": tty,
                     "stdin": stdin,
+                    "lifecycle": {
+                      "preStop": {
+                        "exec": { "command": ["/bin/sh", "-c", "[ -f {prestop} ] && {prestop}".format(prestop = homedir + "prestop.sh")] }
+                      }
+                    }
                 }
             ]
         }
